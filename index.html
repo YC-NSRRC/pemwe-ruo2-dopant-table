@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RuO2 Doped Periodic Table</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">RuO2 dopant literature workspace</p>
+        <h1>RuO2 Dopant Literature Database</h1>
+      </div>
+      <div class="header-tools" aria-label="Workspace controls">
+        <label class="search-box">
+          <span>Search</span>
+          <input data-search type="search" placeholder="Ru, Ir, Ce..." autocomplete="off">
+        </label>
+        <div class="metric">
+          <span>Recorded</span>
+          <strong data-filled-count>0 / 118</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="table-panel" aria-label="Interactive periodic table">
+        <div class="table-axis group-axis" aria-hidden="true">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+          <span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+          <span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+        </div>
+        <div data-periodic-table class="periodic-table"></div>
+      </section>
+
+      <aside class="research-panel" aria-label="Research cues">
+        <h2>RuO2 dopant literature fields</h2>
+        <div class="cue-list">
+          <div>
+            <strong>Sample</strong>
+            <span>Record the sample name used in the paper, such as Ce-RuO2, Ru0.8Ir0.2O2, or doped RuOx.</span>
+          </div>
+          <div>
+            <strong>Synthesis</strong>
+            <span>Record the synthesis route, such as hydrothermal, sol-gel, molten salt, calcination, or annealing.</span>
+          </div>
+          <div>
+            <strong>Activity</strong>
+            <span>Capture current density, cell voltage, acidic OER overpotential, Tafel slope, and loading.</span>
+          </div>
+          <div>
+            <strong>Stability</strong>
+            <span>Capture AST, constant-current PEMWE, dissolution, voltage drift, and post-mortem evidence.</span>
+          </div>
+          <div>
+            <strong>Remarks</strong>
+            <span>Note Ru-O/Ru-Ru changes, oxygen vacancies, AEM/LOM evidence, and operando XAS findings.</span>
+          </div>
+        </div>
+        <p class="storage-note">Entries are stored in this browser through localStorage.</p>
+        <p class="status-line" data-status>Ready</p>
+      </aside>
+    </main>
+
+    <dialog data-modal class="editor-modal" aria-labelledby="modal-title">
+      <form data-editor-form method="dialog" class="editor-shell">
+        <div class="editor-header">
+          <div>
+            <p data-modal-meta class="modal-meta">Element</p>
+            <h2 id="modal-title" data-modal-title>Element</h2>
+          </div>
+          <button data-close-modal type="button" class="icon-button" aria-label="Close editor" title="Close">
+            <span aria-hidden="true">x</span>
+          </button>
+        </div>
+
+        <section data-entry-summary class="entry-summary-panel">
+          <div class="summary-heading">
+            <div>
+              <p class="eyebrow">Parsed literature summary</p>
+              <h3>Summary highlights</h3>
+            </div>
+            <button data-manual-edit type="button" class="primary-button">Add manual article</button>
+          </div>
+          <div data-entry-summary-list class="entry-summary-list"></div>
+        </section>
+
+        <div data-editor-fields class="field-grid" hidden>
+          <label>
+            <span>Article title</span>
+            <input name="title" type="text" placeholder="e.g., Operando Ru L3-edge XAS reveals...">
+          </label>
+
+          <label>
+            <span>Journal information</span>
+            <input name="journalInfo" type="text" placeholder="e.g., Nature Catalysis, Advanced Energy Materials, Joule">
+          </label>
+
+          <label>
+            <span>Publication year</span>
+            <input name="publicationYear" type="text" inputmode="numeric" placeholder="e.g., 2025">
+          </label>
+
+          <label>
+            <span>Volume/pages/article number</span>
+            <input name="publicationId" type="text" placeholder="e.g., 15, 2500001 or 12, 100-110">
+          </label>
+
+          <label>
+            <span>Sample name</span>
+            <input name="sampleName" type="text" placeholder="e.g., Ce-RuO2, Ru0.8Ir0.2O2, W-doped RuOx">
+          </label>
+
+          <label>
+            <span>Synthesis method</span>
+            <textarea name="synthesis" rows="3" placeholder="Record precursors, dopant source, hydrothermal/sol-gel/calcination conditions..."></textarea>
+          </label>
+
+          <label>
+            <span>PEMWE activity</span>
+            <textarea name="activity" rows="4" placeholder="Record cell voltage, current density, overpotential, Tafel slope, mass activity, loading, membrane/electrode condition..."></textarea>
+          </label>
+
+          <label>
+            <span>PEMWE stability</span>
+            <textarea name="stability" rows="4" placeholder="Record durability protocol, voltage drift, dissolution, AST, post-mortem evidence, PEMWE operating condition..."></textarea>
+          </label>
+
+          <label>
+            <span>Remarks</span>
+            <textarea name="notes" rows="5" placeholder="Mechanistic points, XAS/EXAFS/WT evidence, reviewer risks, and follow-up validation..."></textarea>
+          </label>
+        </div>
+
+        <div data-editor-actions class="editor-actions" hidden>
+          <button data-summary-view type="button" class="secondary-button">Back to summary</button>
+          <button data-save-entry type="button" class="secondary-button">Save entry</button>
+          <button data-copy-png type="button" class="secondary-button">Copy snapshot</button>
+          <button data-download-png type="button" class="primary-button">Save PNG</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./data.js"></script>
+    <script src="./app.browser.js"></script>
+  </body>
+</html>
