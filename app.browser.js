@@ -270,11 +270,15 @@ function articleSummaryLine(article = {}, index = 0) {
 function initApp() {
   const table = document.querySelector('[data-periodic-table]');
   const modal = document.querySelector('[data-modal]');
+  const indexModal = document.querySelector('[data-index-modal]');
   const status = document.querySelector('[data-status]');
-  const searchInput = document.querySelector('[data-search]');
   const filledCount = document.querySelector('[data-filled-count]');
   const modalTitle = document.querySelector('[data-modal-title]');
   const modalMeta = document.querySelector('[data-modal-meta]');
+  const openIndexButton = document.querySelector('[data-open-index]');
+  const closeIndexButton = document.querySelector('[data-close-index]');
+  const indexByElement = document.querySelector('[data-index-by-element]');
+  const indexByCount = document.querySelector('[data-index-by-count]');
   const closeButtons = document.querySelectorAll('[data-close-modal]');
   const form = document.querySelector('[data-editor-form]');
   const summaryPanel = document.querySelector('[data-entry-summary]');
@@ -316,9 +320,8 @@ function initApp() {
     filledCount.textContent = `${count} / ${ELEMENTS.length}`;
   }
 
-  function renderTable(filter = '') {
+  function renderTable() {
     table.innerHTML = '';
-    const query = filter.trim().toLowerCase();
 
     for (const element of ELEMENTS) {
       const entry = entries[element.symbol] || createDefaultEntry();
@@ -332,7 +335,6 @@ function initApp() {
       button.disabled = isRuCore;
       button.dataset.symbol = element.symbol;
       button.setAttribute('aria-label', isRuCore ? 'RuO2 core marker' : `${element.name}, ${element.symbol}`);
-      button.hidden = Boolean(query) && !`${element.symbol} ${element.name} ${element.atomicNumber}`.toLowerCase().includes(query);
       button.innerHTML = `
         <span class="atomic-number">${element.atomicNumber}</span>
         <span class="symbol">${element.symbol}</span>
@@ -349,6 +351,77 @@ function initApp() {
         button.addEventListener('click', () => openEditor(element));
       }
       table.append(button);
+    }
+  }
+
+  function getIndexedElements() {
+    return ELEMENTS
+      .filter((element) => element.symbol !== 'Ru')
+      .map((element) => ({
+        ...element,
+        articleCount: getEntryArticles(entries[element.symbol] || createDefaultEntry()).length,
+      }))
+      .filter((element) => element.articleCount > 0);
+  }
+
+  function createIndexElementLink(element) {
+    const link = document.createElement('a');
+    link.href = `#${element.symbol}`;
+    link.className = 'index-link';
+    link.setAttribute('data-index-symbol', element.symbol);
+    link.innerHTML = `
+      <span class="index-symbol">${element.symbol}</span>
+      <span class="index-name">${element.name}</span>
+      <span class="index-count">${element.articleCount} ${element.articleCount === 1 ? 'article' : 'articles'}</span>
+    `;
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      indexModal.close();
+      openEditor(element);
+    });
+    return link;
+  }
+
+  function renderLiteratureIndex() {
+    const indexedElements = getIndexedElements();
+
+    indexByElement.innerHTML = '';
+    indexByCount.innerHTML = '';
+
+    if (!indexedElements.length) {
+      const empty = document.createElement('p');
+      empty.className = 'index-empty';
+      empty.textContent = 'No literature entries have been recorded yet.';
+      indexByElement.append(empty.cloneNode(true));
+      indexByCount.append(empty);
+      return;
+    }
+
+    for (const element of indexedElements) {
+      indexByElement.append(createIndexElementLink(element));
+    }
+
+    const grouped = new Map();
+    for (const element of indexedElements) {
+      const current = grouped.get(element.articleCount) || [];
+      current.push(element);
+      grouped.set(element.articleCount, current);
+    }
+    for (const count of [...grouped.keys()].sort((a, b) => b - a)) {
+      const group = document.createElement('section');
+      const heading = document.createElement('h4');
+      const links = document.createElement('div');
+
+      group.className = 'index-count-group';
+      heading.textContent = `${count} ${count === 1 ? 'article' : 'articles'}`;
+      links.className = 'index-chip-list';
+
+      for (const element of grouped.get(count).sort((a, b) => a.atomicNumber - b.atomicNumber)) {
+        links.append(createIndexElementLink(element));
+      }
+
+      group.append(heading, links);
+      indexByCount.append(group);
     }
   }
 
@@ -523,7 +596,8 @@ function initApp() {
     activeArticleIndex = 0;
     saveEntries(localStorage, entries);
     renderEntrySummary(activeElement, nextEntry);
-    renderTable(searchInput.value);
+    renderTable();
+    renderLiteratureIndex();
     updateFilledCount();
     showStatus(`${activeElement.symbol} article deleted`);
   }
@@ -580,7 +654,8 @@ function initApp() {
     };
     saveEntries(localStorage, entries);
     renderEntrySummary(activeElement, normalizedEntry);
-    renderTable(searchInput.value);
+    renderTable();
+    renderLiteratureIndex();
     updateFilledCount();
     showStatus(`${activeElement.symbol} entry saved`);
     return nextEntry;
@@ -703,7 +778,16 @@ function initApp() {
   summaryViewButton.addEventListener('click', () => setEditorMode('summary'));
   downloadButton.addEventListener('click', downloadSnapshot);
   copyButton.addEventListener('click', copySnapshot);
-  searchInput.addEventListener('input', () => renderTable(searchInput.value));
+  openIndexButton.addEventListener('click', () => {
+    renderLiteratureIndex();
+    indexModal.showModal();
+  });
+  closeIndexButton.addEventListener('click', () => indexModal.close());
+  indexModal.addEventListener('click', (event) => {
+    if (event.target === indexModal) {
+      indexModal.close();
+    }
+  });
   closeButtons.forEach((button) => button.addEventListener('click', closeEditor));
   modal.addEventListener('click', (event) => {
     if (event.target === modal) {
@@ -712,6 +796,7 @@ function initApp() {
   });
 
   renderTable();
+  renderLiteratureIndex();
   updateFilledCount();
 }
 

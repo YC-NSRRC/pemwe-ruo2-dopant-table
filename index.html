@@ -13,14 +13,12 @@
         <h1>RuO2 Dopant Literature Database</h1>
       </div>
       <div class="header-tools" aria-label="Workspace controls">
-        <label class="search-box">
-          <span>Search</span>
-          <input data-search type="search" placeholder="Ru, Ir, Ce..." autocomplete="off">
-        </label>
+        <button data-open-index type="button" class="primary-button">Literature Index</button>
         <div class="metric">
           <span>Recorded</span>
           <strong data-filled-count>0 / 118</strong>
         </div>
+        <p class="status-line" data-status>Ready</p>
       </div>
     </header>
 
@@ -33,35 +31,33 @@
         </div>
         <div data-periodic-table class="periodic-table"></div>
       </section>
-
-      <aside class="research-panel" aria-label="Research cues">
-        <h2>RuO2 dopant literature fields</h2>
-        <div class="cue-list">
-          <div>
-            <strong>Sample</strong>
-            <span>Record the sample name used in the paper, such as Ce-RuO2, Ru0.8Ir0.2O2, or doped RuOx.</span>
-          </div>
-          <div>
-            <strong>Synthesis</strong>
-            <span>Record the synthesis route, such as hydrothermal, sol-gel, molten salt, calcination, or annealing.</span>
-          </div>
-          <div>
-            <strong>Activity</strong>
-            <span>Capture current density, cell voltage, acidic OER overpotential, Tafel slope, and loading.</span>
-          </div>
-          <div>
-            <strong>Stability</strong>
-            <span>Capture AST, constant-current PEMWE, dissolution, voltage drift, and post-mortem evidence.</span>
-          </div>
-          <div>
-            <strong>Remarks</strong>
-            <span>Note Ru-O/Ru-Ru changes, oxygen vacancies, AEM/LOM evidence, and operando XAS findings.</span>
-          </div>
-        </div>
-        <p class="storage-note">Entries are stored in this browser through localStorage.</p>
-        <p class="status-line" data-status>Ready</p>
-      </aside>
     </main>
+
+    <dialog data-index-modal class="index-modal" aria-labelledby="index-title">
+      <div class="index-shell">
+        <div class="editor-header">
+          <div>
+            <p class="modal-meta">RuO2 dopant database</p>
+            <h2 id="index-title">Literature Index</h2>
+          </div>
+          <button data-close-index type="button" class="icon-button" aria-label="Close index" title="Close">
+            <span aria-hidden="true">x</span>
+          </button>
+        </div>
+
+        <div class="index-grid">
+          <section class="index-section" aria-labelledby="index-by-element-title">
+            <h3 id="index-by-element-title">By element</h3>
+            <div data-index-by-element class="index-link-list"></div>
+          </section>
+
+          <section class="index-section" aria-labelledby="index-by-count-title">
+            <h3 id="index-by-count-title">By article count</h3>
+            <div data-index-by-count class="index-count-groups"></div>
+          </section>
+        </div>
+      </div>
+    </dialog>
 
     <dialog data-modal class="editor-modal" aria-labelledby="modal-title">
       <form data-editor-form method="dialog" class="editor-shell">
